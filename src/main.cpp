@@ -134,6 +134,7 @@ float offset[] = {0, 0, 0}; //x,y,z
 float accel[] = {0, 0, 0};
 
 int i = 0; //Determines first loop iteration to calibrate values.
+char ch;    //Serial Read data
 void loop() {
   // put your main code here, to run repeatedly:
 
@@ -146,7 +147,19 @@ void loop() {
   sensors_event_t a2, g2, temp2;
   mpu2.getEvent(&a2, &g2, &temp2);
 
-  if (Serial.read() == 'r' || i == 0) {
+
+  ch = Serial.read();
+
+  if (ch == 'p') {
+    Serial.println("Data Collection Paused.  Press send 's' to continue");
+    while(ch!='s'){
+      delay(100);
+      ch = Serial.read();  
+    }
+  }
+
+
+  if (ch == 'r' || i == 0) {
     //Serial.println("Reseting acceleration offset values.");
     //Serial.println("Do not move Accelerometer.");
     //Serial.println("\n");

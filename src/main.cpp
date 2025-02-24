@@ -191,7 +191,6 @@ void loop() {
   Serial.print("\t");
 
   /* Print out the values from the second MPU6050 */
-  Serial.print("\t");
   Serial.print(a2.acceleration.x);
   Serial.print("\t");
   Serial.print(a2.acceleration.y);

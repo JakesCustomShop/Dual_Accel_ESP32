@@ -7,6 +7,8 @@ import serial.tools.list_ports
 import tkinter as tk
 from tkinter import messagebox
 import threading
+#  Make sure your packages are up to date, then create the .exe
+#  pyinstaller --onefile --icon=Accel.ico AccelDataCollector.py
 
 baud_rate = 19200
 

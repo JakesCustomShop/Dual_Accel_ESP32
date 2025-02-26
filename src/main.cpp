@@ -1,15 +1,22 @@
 #include <Arduino.h>
 
 
+/*
+02/09/2022
+Jake Lehotsky
+BISE Lab Engineer
+lehotsky001@gannon.edu
+Jake@JakesCustomShop.com
 
-//https://randomnerdtutorials.com/arduino-mpu-6050-accelerometer-gyroscope/
-//Code modfied by Jake Lehotsky, BISE Lab Engineer, 02/09/2022
-//Jake@JakesCustomShop.com
-//lehotsky001@gannon.edu
+Github: https://github.com/JakesCustomShop/Dual_Accel_ESP32
+Based loosly on: https://randomnerdtutorials.com/arduino-mpu-6050-accelerometer-gyroscope/
 
-//When time stamps are turned on, Serial Monitor data can be copy and pasted into a spreadsheet.
+When time stamps are turned on, Serial Monitor data can be copy and pasted into a spreadsheet.
+Rotation data is commented out.
 
 
+
+*/
 #include "Adafruit_MPU6050.h"
 #include "Adafruit_Sensor.h"
 #include <Wire.h>
@@ -20,7 +27,7 @@ short T = 0;                //Serial Monitor data output period in miliseconds. 
 void setup() {
 
   //SETUP Accelorometers
-  Serial.begin(115200);     //Set Baud rate to 115200
+  Serial.begin(19200);     //Set Baud rate to 115200
   while (!Serial)
     delay(10);
 
@@ -130,8 +137,9 @@ if (!mpu1.begin(0x68)) {
 //---------------------------------------------------------------------//
 
 //Initilize offest values to zero Acceleratrion due to gravity
-float offset[] = {0, 0, 0}; //x,y,z
-float accel[] = {0, 0, 0};
+float offset[] = {0,0,0,0,0,0,0,0,0,0,0,0}; //x,y,z
+float accel[] = {0, 0, 0, 0,0,0};
+float rot[] = {0, 0, 0, 0, 0, 0};    //Rotational Acceleration (degree/s)
 
 int i = 0; //Determines first loop iteration to calibrate values.
 char ch;    //Serial Read data
@@ -149,7 +157,7 @@ void loop() {
 
 
   ch = Serial.read();
-
+   
   if (ch == 'p') {
     Serial.println("Data Collection Paused.  Press send 's' to continue");
     while(ch!='s'){
@@ -167,6 +175,16 @@ void loop() {
     offset[0] = a.acceleration.x;
     offset[1] = a.acceleration.y;
     offset[2] = a.acceleration.z;
+    offset[3] = a2.acceleration.x;
+    offset[4] = a2.acceleration.y;
+    offset[5] = a2.acceleration.z;
+
+    offset[6] = g.gyro.x*180/3.14159;           //Set the offsets for the gyro.
+    offset[7] = g.gyro.y*180/3.14159;
+    offset[8] = g.gyro.z*180/3.14159;
+    offset[9] = g2.gyro.x*180/3.14159;           //Set the offsets for the gyro.
+    offset[10] = g2.gyro.y*180/3.14159;
+    offset[11] = g2.gyro.z*180/3.14159;
 
     //Check if accelerometer is steady
     delay (1000);
@@ -186,7 +204,17 @@ void loop() {
   accel[0] = a.acceleration.x - offset[0];
   accel[1] = a.acceleration.y - offset[1];
   accel[2] = a.acceleration.z - offset[2];
+  accel[3] = a2.acceleration.x - offset[3];
+  accel[4] = a2.acceleration.y - offset[4];
+  accel[5] = a2.acceleration.z - offset[5];
 
+
+  // rot[0] = g.gyro.x*180/3.14159 - offset[6];
+  // rot[1] = g.gyro.y*180/3.14159 - offset[7];
+  // rot[2] = g.gyro.z*180/3.14159 - offset[8];
+  // rot[3] = g2.gyro.x*180/3.14159 - offset[9];
+  // rot[4] = g2.gyro.y*180/3.14159 - offset[10];
+  // rot[5] = g2.gyro.z*180/3.14159 - offset[11];
 
   /* Print out the values from the first MPU6050 */
   Serial.print("\t");
@@ -196,25 +224,33 @@ void loop() {
   Serial.print("\t");
   Serial.print(accel[2]);
   Serial.print("\t");
-  Serial.print(g.gyro.x);
-  Serial.print("\t");
-  Serial.print(g.gyro.y);
-  Serial.print("\t");
-  Serial.print(g.gyro.z);
-  Serial.print("\t");
+
+  // Serial.print(rot[0]);
+  // Serial.print("\t");
+  // Serial.print(rot[1]);
+  // Serial.print("\t");
+  // Serial.print(rot[2]);
+  // Serial.print("\t");
+
+  Serial.print("\t\t\t");   //Placholder for not using rotational values.  Removing the serial prints speeds things up
 
   /* Print out the values from the second MPU6050 */
-  Serial.print(a2.acceleration.x);
+  Serial.print(accel[3]);
   Serial.print("\t");
-  Serial.print(a2.acceleration.y);
+  Serial.print(accel[4]);
   Serial.print("\t");
-  Serial.print(a2.acceleration.z);
-  Serial.print("\t");
-  Serial.print(g2.gyro.x);
-  Serial.print("\t");
-  Serial.print(g2.gyro.y);
-  Serial.print("\t");
-  Serial.print(g2.gyro.z);
+  Serial.print(accel[5]);
+
+
+  // Serial.print("\t");
+  // Serial.print(rot[3]);
+  // Serial.print("\t");
+  // Serial.print(rot[4]);
+  // Serial.print("\t");
+  // Serial.print(rot[5]);
+  Serial.print("\t\t\t");   //Placholder for not using rotational values.  Removing the serial prints speeds things up
+
+
   Serial.print("\n");
 
   delay(T);

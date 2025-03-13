@@ -10,7 +10,10 @@ import threading
 #  Make sure your packages are up to date, then create the .exe
 #  pyinstaller --onefile --icon=Accel.ico AccelDataCollector.py
 
-baud_rate = 19200
+
+# 20250313 - Increased Baud Rate and removed all data points except Z1 and Z2 accel.
+
+baud_rate = 230400
 
 class AccelDataCollector:
     def __init__(self):
@@ -227,10 +230,11 @@ class AccelDataCollector:
     def save_data_to_csv(self, filename):
         with open(filename, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['Time', 'Accel1_X [m/s^2]', 'Accel1_Y [m/s^2]', 'Accel1_Z [m/s^2]', 
-                               'Rotation1_X [rad/s]', 'Rotation1_Y [rad/s]', 'Rotation1_Z [rad/s]', 
-                               'Accel2_X [m/s^2]', 'Accel2_Y [m/s^2]', 'Accel2_Z [m/s^2]', 
-                               'Rotation2_X [rad/s]', 'Rotation2_Y [rad/s]', 'Rotation2_Z [rad/s]'])
+            # writer.writerow(['Time', 'Accel1_X [m/s^2]', 'Accel1_Y [m/s^2]', 'Accel1_Z [m/s^2]', 
+                            #    'Rotation1_X [rad/s]', 'Rotation1_Y [rad/s]', 'Rotation1_Z [rad/s]', 
+                            #    'Accel2_X [m/s^2]', 'Accel2_Y [m/s^2]', 'Accel2_Z [m/s^2]', 
+                            #    'Rotation2_X [rad/s]', 'Rotation2_Y [rad/s]', 'Rotation2_Z [rad/s]'])
+            writer.writerow(['Time', 'Accel1_Z [m/s^2]',  'Accel2_Z [m/s^2]'])
             writer.writerows(self.collected_data)
         print(f"Data saved to {filename}")
 

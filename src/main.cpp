@@ -27,7 +27,7 @@ short T = 0;                //Serial Monitor data output period in miliseconds. 
 void setup() {
 
   //SETUP Accelorometers
-  Serial.begin(19200);     //Set Baud rate to 115200
+  Serial.begin(230400);     //Set Baud rate to 115200
   while (!Serial)
     delay(10);
 
@@ -53,6 +53,7 @@ if (!mpu1.begin(0x68)) {
   Serial.println("Second MPU6050 Found!");
 
   mpu1.setAccelerometerRange(MPU6050_RANGE_16_G);       //Set the range of the accelorometer readings 2,4,8,16g
+  mpu2.setAccelerometerRange(MPU6050_RANGE_16_G);       //Set the range of the accelorometer readings 2,4,8,16g
   Serial.print("Accelerometer range set to: ");       //1g = 9.8 m/s^2 ie the acceleration of gravity
   switch (mpu1.getAccelerometerRange()) {
     case MPU6050_RANGE_2_G:
@@ -69,6 +70,7 @@ if (!mpu1.begin(0x68)) {
       break;
   }
   mpu1.setGyroRange(MPU6050_RANGE_250_DEG);            //Set the range of the Gyro 250,500,1000,2000 degrees/second
+  mpu2.setGyroRange(MPU6050_RANGE_250_DEG);            //Set the range of the Gyro 250,500,1000,2000 degrees/second
   Serial.print("Gyro range set to: ");
   switch (mpu1.getGyroRange()) {
     case MPU6050_RANGE_250_DEG:
@@ -85,7 +87,8 @@ if (!mpu1.begin(0x68)) {
       break;
   }
 
-  mpu1.setFilterBandwidth(MPU6050_BAND_21_HZ);           //Set the bandwidth of the samples.  5,10,21,44,94,184,260 HZ.
+  mpu1.setFilterBandwidth(MPU6050_BAND_260_HZ);           //Set the bandwidth of the samples.  5,10,21,44,94,184,260 HZ.
+  mpu2.setFilterBandwidth(MPU6050_BAND_260_HZ);           //Set the bandwidth of the samples.  5,10,21,44,94,184,260 HZ.
   Serial.print("Filter bandwidth set to: ");            //Higher Bandwidth --> More samples per second --> more data points
   switch (mpu1.getFilterBandwidth()) {
     case MPU6050_BAND_260_HZ:
@@ -118,18 +121,18 @@ if (!mpu1.begin(0x68)) {
 
   //Build table
   Serial.print("\t");
-  Serial.print("Accel1_X [m/s^2]\t");
-  Serial.print("Accel1_Y [m/s^2]\t");
+  // Serial.print("Accel1_X [m/s^2]\t");
+  // Serial.print("Accel1_Y [m/s^2]\t");
   Serial.print("Accel1_Z [m/s^2]\t");
-  Serial.print("Rotation1_X [rad/s]\t");
-  Serial.print("Rotation1_Y [rad/s]\t");
-  Serial.print("Rotation1_Z [rad/s]\t");
-  Serial.print("Accel2_X [m/s^2]\t");
-  Serial.print("Accel2_Y [m/s^2]\t");
-  Serial.print("Accel2_Z [m/s^2]\t");
-  Serial.print("Rotation2_X [rad/s]\t");
-  Serial.print("Rotation2_Y [rad/s]\t");
-  Serial.print("Rotation2_Z [rad/s]\n");
+  // Serial.print("Rotation1_X [rad/s]\t");
+  // Serial.print("Rotation1_Y [rad/s]\t");
+  // Serial.print("Rotation1_Z [rad/s]\t");
+  // Serial.print("Accel2_X [m/s^2]\t");
+  // Serial.print("Accel2_Y [m/s^2]\t");
+  Serial.print("Accel2_Z [m/s^2]\n");
+  // Serial.print("Rotation2_X [rad/s]\t");
+  // Serial.print("Rotation2_Y [rad/s]\t");
+  // Serial.print("Rotation2_Z [rad/s]\n");
 
 }
 
@@ -201,11 +204,11 @@ void loop() {
 
   }
 
-  accel[0] = a.acceleration.x - offset[0];
-  accel[1] = a.acceleration.y - offset[1];
+  // accel[0] = a.acceleration.x - offset[0];
+  // accel[1] = a.acceleration.y - offset[1];
   accel[2] = a.acceleration.z - offset[2];
-  accel[3] = a2.acceleration.x - offset[3];
-  accel[4] = a2.acceleration.y - offset[4];
+  // accel[3] = a2.acceleration.x - offset[3];
+  // accel[4] = a2.acceleration.y - offset[4];
   accel[5] = a2.acceleration.z - offset[5];
 
 
@@ -217,13 +220,18 @@ void loop() {
   // rot[5] = g2.gyro.z*180/3.14159 - offset[11];
 
   /* Print out the values from the first MPU6050 */
-  Serial.print("\t");
-  Serial.print(accel[0]);
-  Serial.print("\t");
-  Serial.print(accel[1]);
+  // Serial.print("\t");
+  // Serial.print(accel[0]);
+  // Serial.print("\t");
+  // Serial.print(accel[1]);
   Serial.print("\t");
   Serial.print(accel[2]);
+  // Serial.print("\t");
+  // Serial.print(accel[3]);
+  // Serial.print("\t");
+  // Serial.print(accel[4]);
   Serial.print("\t");
+  Serial.print(accel[5]);
 
   // Serial.print(rot[0]);
   // Serial.print("\t");
@@ -232,23 +240,13 @@ void loop() {
   // Serial.print(rot[2]);
   // Serial.print("\t");
 
-  Serial.print("\t\t\t");   //Placholder for not using rotational values.  Removing the serial prints speeds things up
-
-  /* Print out the values from the second MPU6050 */
-  Serial.print(accel[3]);
-  Serial.print("\t");
-  Serial.print(accel[4]);
-  Serial.print("\t");
-  Serial.print(accel[5]);
-
-
   // Serial.print("\t");
   // Serial.print(rot[3]);
   // Serial.print("\t");
   // Serial.print(rot[4]);
   // Serial.print("\t");
   // Serial.print(rot[5]);
-  Serial.print("\t\t\t");   //Placholder for not using rotational values.  Removing the serial prints speeds things up
+  // Serial.print("\t\t\t");   //Placholder for not using rotational values.  Removing the serial prints speeds things up
 
 
   Serial.print("\n");
